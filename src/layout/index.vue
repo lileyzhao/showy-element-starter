@@ -104,10 +104,7 @@ const handleAction = (op: string, _val: any) => {
     <!-- Sidebar (Desktop): Main Sidebar. 侧边栏(电脑端):主栏。 -->
     <MainSidebar v-if="!app.isMobile && !isTopBar" ref="mainSidebarRef" @key-change="handleMainMenuKeyChange" />
     <!-- Sidebar (Desktop): Sub Sidebar. 侧边栏(电脑端):副栏。 -->
-    <SubSidebar
-      v-if="!app.isMobile && (!isTopBar || app.MenuSetting.topMenu.showSubMenu)" ref="subSidebarRef"
-      :parent-menu-key="mainMenuRootKey"
-    />
+    <SubSidebar ref="subSidebarRef" :parent-menu-key="mainMenuRootKey" />
 
     <!-- Right main area. 右侧主体区。 -->
     <el-container class="h-100vh flex flex-col!">

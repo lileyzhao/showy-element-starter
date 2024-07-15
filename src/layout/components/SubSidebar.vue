@@ -1,4 +1,5 @@
 <script setup lang="ts" name="Layout-SubSidebar">
+import { ReadableStreamDefaultController } from 'node:stream/web'
 import { useAppStore } from '@/store'
 import Logo from '@/layout/components/Logo.vue'
 import { MenuPositionEnum } from '@/shared'
@@ -37,6 +38,15 @@ const refreshSubMenu = () => {
   })
 }
 
+const visible = computed(() => {
+  if (app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
+    return app.MenuSetting.topMenu.showSubMenu && subMenuRoutes.value.length > 0
+  else
+    return !app.MenuSetting.subMenu.collapsed || app.MenuSetting.topMenu.showSubMenu
+})
+
+const visibleLogo = computed(() => app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR && app.MenuSetting.topMenu.showSubMenu)
+
 /** Exposes 公开对象 */
 defineExpose({ refreshSubMenu })
 </script>
@@ -44,8 +54,7 @@ defineExpose({ refreshSubMenu })
 <template>
   <!-- Sidebar (desktop): Sub-sidebar 侧边栏(电脑端):副栏 -->
   <el-aside
-    v-if="subMenuItems.length > 0 && (!app.MenuSetting.subMenu.collapsed || app.MenuSetting.topMenu.showSubMenu)"
-    :width="`${app.MenuSetting.subMenu.width}px`" class="h-100vh of-x-hidden!"
+    v-if="visible" :width="`${app.MenuSetting.subMenu.width}px`" class="h-100vh of-x-hidden!"
     style="border-right:1px solid var(--el-border-color);"
   >
     <el-container class="h-full">
@@ -53,10 +62,7 @@ defineExpose({ refreshSubMenu })
         bordered
         :style="{ padding: 0, height: 'auto', lineHeight: 'auto', borderBottom: `1px solid var(--el-border-color)` }"
       >
-        <Logo
-          v-if="app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR && app.MenuSetting.topMenu.showSubMenu"
-          flex-y-center p-l-5
-        />
+        <Logo v-if="visibleLogo" flex-y-center p-l-5 />
         <Logo v-else hide-logo :hide-title="!app.MenuSetting.mainMenu.collapsed" flex-y-center p-l-5 />
       </el-header>
       <el-main class="p0!">
