@@ -77,11 +77,11 @@ defineExpose({ refreshMainMenu })
     <el-container class="h-full">
       <el-header
         :class="logoClass" :style="{
-          backgroundColor: mainMenuInverted ? '#18181c' : 'transparent',
+          backgroundColor: mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent',
           padding: 0,
           height: 'auto',
           lineHeight: 'auto',
-          borderBottom: mainMenuInverted && !app.IsDarkMode ? '1px solid #4c4d4f' : `1px solid var(--el-border-color)`,
+          borderBottom: mainMenuInverted && !app.IsDarkMode ? '1px solid var(--el-border-color-dark)' : `1px solid var(--el-border-color)`,
         }"
       >
         <Logo w-full :hide-title="collMainMenu" />
@@ -90,7 +90,7 @@ defineExpose({ refreshMainMenu })
       <el-main class="of-x-hidden! p0!">
         <el-menu
           v-if="mainMenuKey" class="main-menu h-full! w-full! b-r-none!"
-          :background-color="mainMenuInverted ? '#18181c' : undefined"
+          :background-color="mainMenuInverted ? 'var(--el-bg-color-dark)' : undefined"
           :text-color="mainMenuInverted ? '#bbb' : undefined" unique-opened :default-active="mainMenuKey"
           :collapse="collMainMenu && collSubMenu" @select="handleMainMenuKeyChange"
         >
@@ -99,10 +99,7 @@ defineExpose({ refreshMainMenu })
           </template>
         </el-menu>
       </el-main>
-      <el-footer
-        class="h-auto! px-0! py-3!"
-        :style="`background-color:${mainMenuInverted ? '#18181c' : 'transparent'};`"
-      >
+      <el-footer class="h-auto! px-0! py-3!" :style="`background-color:${mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent'};`">
         <div v-if="!app.IsDarkMode && !collMainMenu" relative h-20px w-full>
           <div
             :class="`left-50% -translate-x-1/2 i-line-md:${mainMenuInverted ? 'sunny-filled hover:text-yellow text-white' : 'moon-filled hover:text-purple'}`"
@@ -140,7 +137,7 @@ defineExpose({ refreshMainMenu })
 <style scoped lang="scss">
 .main-menu {
   :deep(.el-sub-menu__title) {
-    --at-apply: h-auto!;
+    --at-apply: h-auto !;
   }
 }
 </style>

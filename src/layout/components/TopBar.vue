@@ -167,7 +167,7 @@ defineExpose({ refreshTopMenu })
           @click="toggleLanguage"
         />
         <ActionIcon
-          v-if="!app.isMobile && menuSetting.buttons.includes(MenuButtonEnum.ThemeDrawer)" button
+          v-if="!app.isMobile && app.hasMenuButton(MenuButtonEnum.ThemeDrawer)" button
           icon-class="i-carbon:cookie" @click="toggleThemeDrawer"
         />
         <!-- profile 个人资料 -->

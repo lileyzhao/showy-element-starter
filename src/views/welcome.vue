@@ -20,7 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card class="m--8px! b-0!" shadow="never" :body-style="{ padding: 0 }">
+  <el-card class="m--12px! b-0! b-rd-0!" shadow="never" :body-style="{ padding: 0 }">
     <div flex flex-col items-center justify-center gap-y-4 pt-4>
       <div
         :class="`i-line-md:${app.IsDarkMode ? 'moon-filled-loop text-purple' : 'sunny-filled-loop text-yellow'}`"

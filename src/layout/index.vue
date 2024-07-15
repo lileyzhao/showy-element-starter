@@ -6,7 +6,7 @@ import ThemeDrawer from './components/ThemeDrawer.vue'
 import MobileDrawer from './components/MobileDrawer.vue'
 import TopBar from './components/TopBar.vue'
 import { useAppStore } from '@/store'
-import { MenuButtonEnum, MenuPositionEnum, ScreenEnum } from '@/shared'
+import { MenuPositionEnum, ScreenEnum } from '@/shared'
 import { getFullRoutes } from '@/utils'
 
 const app = useAppStore()
@@ -120,10 +120,10 @@ const handleAction = (op: string, _val: any) => {
       />
       <!-- Content area. 内容区。 -->
       <el-main
-        flex-1 :style="`overflow-y:scroll;${app.IsDarkMode ? 'background-color: #18181c;' : ''}`"
-        @mouseenter="restoreSubMenu" @mouseleave="cancelRestoreSubMenu"
+        id="app-main-content" flex-1 of-y-scroll p-0 @mouseenter="restoreSubMenu"
+        @mouseleave="cancelRestoreSubMenu"
       >
-        <div p-8px :style="{ backgroundColor: app.IsDarkMode ? '#26262a' : '#f7fafc' }">
+        <div p-12px>
           <router-view v-slot="{ Component, route: r }">
             <transition name="fade">
               <keep-alive :max="25">
@@ -132,6 +132,7 @@ const handleAction = (op: string, _val: any) => {
             </transition>
           </router-view>
         </div>
+        <el-backtop target="#app-main-content" :visibility-height="100" />
       </el-main>
     </el-container>
 
@@ -139,16 +140,14 @@ const handleAction = (op: string, _val: any) => {
     <MobileDrawer v-if="app.isMobile" ref="mobileDrawerRef" />
 
     <!-- Theme settings drawer. 主题设置抽屉栏。 -->
-    <ThemeDrawer v-if="!app.isMobile && app.hasMenuButton(MenuButtonEnum.ThemeDrawer)" ref="themeDrawerRef" />
-
-    <el-backtop />
+    <ThemeDrawer v-if="!app.isMobile" ref="themeDrawerRef" />
   </el-container>
 </template>
 
 <style scoped lang="scss">
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.1s;
+  transition: opacity 0.3s;
 }
 
 .fade-enter,

@@ -1,22 +1,15 @@
 <script setup lang="ts">
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { useCssVar } from '@vueuse/core'
-// import { useAppStore } from '@/store/modules/app'
 
-// const app = useAppStore()
-
-const data = ref({
-  borderRadius: 4,
+const themeVars = reactive({
   colorPrimary: '#646CFF',
 })
 
-useCssVar('--color')
+const primaryColor = useCssVar('--el-color-primary', null, { initialValue: themeVars.colorPrimary })
+primaryColor.value = themeVars.colorPrimary
 
-// 主题变量：https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
-const el = ref(null)
-const primaryColor = useCssVar('--el-color-primary', el)
-primaryColor.value = data.value.colorPrimary
-
+/** Element global config */
 const globalConfig = reactive({
   size: 'default' as 'default' | 'small' | 'large',
   zIndex: 3000,

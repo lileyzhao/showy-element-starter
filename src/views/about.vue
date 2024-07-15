@@ -43,7 +43,7 @@ const latestBuildTime = BUILD_TIME
 </script>
 
 <template>
-  <el-card content-class="!p-8px" class="m--8px! border-none!" shadow="never" :body-style="{ padding: 0 }">
+  <el-card class="border-none!" shadow="never" :body-style="{ padding: 0 }">
     <el-space direction="vertical" :size="14" fill w-full>
       <el-card :header="t('page.about.title')" :bordered="false" size="small" segmented class="card-wrapper">
         <p>{{ t('page.about.introduction') }}</p>
