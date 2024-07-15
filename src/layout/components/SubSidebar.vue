@@ -1,5 +1,4 @@
 <script setup lang="ts" name="Layout-SubSidebar">
-import { ReadableStreamDefaultController } from 'node:stream/web'
 import { useAppStore } from '@/store'
 import Logo from '@/layout/components/Logo.vue'
 import { MenuPositionEnum } from '@/shared'
@@ -58,16 +57,13 @@ defineExpose({ refreshSubMenu })
     style="border-right:1px solid var(--el-border-color);"
   >
     <el-container class="h-full">
-      <el-header
-        bordered
-        :style="{ padding: 0, height: 'auto', lineHeight: 'auto', borderBottom: `1px solid var(--el-border-color)` }"
-      >
-        <Logo v-if="visibleLogo" flex-y-center p-l-5 />
-        <Logo v-else hide-logo :hide-title="!app.MenuSetting.mainMenu.collapsed" flex-y-center p-l-5 />
+      <el-header class="h-auto! p-0!" style="border-bottom:1px solid var(--el-border-color);">
+        <Logo v-if="visibleLogo" p-l-6 />
+        <Logo v-else hide-logo :hide-title="!app.MenuSetting.mainMenu.collapsed" p-l-6 />
       </el-header>
-      <el-main class="p0!">
+      <el-main class="p-0!">
         <!-- Sub-menu 副栏菜单 -->
-        <el-menu v-if="subMenuKey" class="sub-menu b-r-none!" unique-opened :default-active="subMenuKey">
+        <el-menu v-if="subMenuKey" class="sub-menu" unique-opened :default-active="subMenuKey">
           <template #default>
             <component :is="menuItem" v-for="menuItem in subMenuItems" :key="menuItem.key" />
           </template>
@@ -79,12 +75,13 @@ defineExpose({ refreshSubMenu })
 
 <style scoped lang="scss">
 :deep(.sub-menu.el-menu) {
+  --uno: 'b-r-none!';
+
   .el-menu-item {
-    --at-apply: pr-0 !;
-    padding-right: 0 !important;
+    --uno: 'p-r-0!';
 
     a {
-      width: 100%;
+      --uno: 'w-full';
     }
   }
 }
