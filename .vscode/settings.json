@@ -13,7 +13,7 @@
     "dockerfile": ".dockerignore,netlify.*"
   },
   "cSpell.words": [
-    "Antdv",
+    "Element",
     "antfu",
     "astro",
     "attributify",

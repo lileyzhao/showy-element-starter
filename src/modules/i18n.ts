@@ -90,15 +90,15 @@ export function setupI18n(app: App<Element>) {
 }
 
 /**
- * Get Antdv locale configuration based on the provided locale string
- * 根据提供的语言代码获取 Antdv 的语言配置
+ * Get ELement locale configuration based on the provided locale string
+ * 根据提供的语言代码获取 ELement 的语言配置
  * @param locale Language code (e.g., 'zh-CN', 'zh-TW'). 语言代码（例如 'zh-CN', 'zh-TW'）。
  * @returns Returns the corresponding ALocale or null if not found. 返回相应的 ALocale，如果未找到则返回 null。
  */
-export const getAntdvLocale = (locale: string | undefined | null): ALocale | undefined => {
+export const getElementLocale = (locale: string | undefined | null): ALocale | undefined => {
   if (locale === 'zh-CN')
     return zhCN
   if (locale === 'zh-TW')
     return zhTW
-  return undefined // Default to English in Antdv. Antdv 默认情况下为英语。
+  return undefined // Default to English in Element. Element 默认情况下为英语。
 }

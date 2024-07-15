@@ -1,5 +1,5 @@
 <p align='center'>
-  <b>Admin Dashboard UI Template Based on Vue + Vite + Antdv + UnoCSS</b>
+  <b>Admin Dashboard UI Template Based on Vue + Vite + Element + UnoCSS</b>
   <br>Create beautiful and simple admin dashboard UI projects quickly
 </p>
 
@@ -38,7 +38,7 @@ This is merely a template project for an admin dashboard and does not implement 
 
 - ⚡️ **Vue 3** - The latest version of Vue
 - 🚀 **Vite** - Super fast development build tool
-- 🎨 **Antdv** - An enterprise-class UI components based on Ant Design and Vue
+- 🎨 **Element** - Based on Vue 3, a component library for designers and developers
 - 💅 **UnoCSS** - High-performance and extremely flexible instant atomic CSS engine
 - 🧹 **ESLint** - Pre-configured rule set based on [@antfu/eslint-config](https://github.com/antfu/eslint-config)
 
@@ -46,7 +46,7 @@ This is merely a template project for an admin dashboard and does not implement 
 
 ### UI Framework
 
-- [Antdv](https://antdv.com/) - An enterprise-class UI components based on Ant Design and Vue
+- [Element](https://element-plus.org/) - Based on Vue 3, a component library for designers and developers
 - [UnoCSS](https://github.com/unocss/unocss) - High-performance and extremely flexible instant atomic CSS engine
 
 ### Plugins
@@ -76,14 +76,14 @@ This is merely a template project for an admin dashboard and does not implement 
 
 ### GitHub Template
 
-[Create a repository using this template](https://github.com/lileyzhao/showy-antdv-template/generate).
+[Create a repository using this template](https://github.com/lileyzhao/showy-element-template/generate).
 
 ### Clone to local
 
 If you prefer a cleaner git history, you can do it manually:
 
 ```bash
-npx degit lileyzhao/showy-antdv-template your-vue-admin-template
+npx degit lileyzhao/showy-element-template your-vue-admin-template
 cd your-vue-admin-template
 pnpm i # If you haven't installed pnpm, run: npm install -g pnpm
 ```
