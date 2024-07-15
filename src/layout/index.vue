@@ -15,6 +15,7 @@ const fullRoutes = getFullRoutes()
 
 const mountTimeout = ref()
 const mainSidebarRef = ref<InstanceType<typeof MainSidebar>>()
+const subSidebarRef = ref<InstanceType<typeof SubSidebar>>()
 const topBarRef = ref<InstanceType<typeof TopBar>>()
 const mobileDrawerRef = ref<InstanceType<typeof MobileDrawer>>()
 const themeDrawerRef = ref<InstanceType<typeof ThemeDrawer>>()
@@ -48,6 +49,7 @@ const handleMainMenuKeyChange = (key: string) => {
   if (mainMenuKey.value === key)
     return
   mainMenuKey.value = key
+  subSidebarRef.value?.refreshSubMenu()
   clearTimeout(mountTimeout.value)
 }
 
@@ -55,7 +57,6 @@ const handleMainMenuKeyChange = (key: string) => {
 const restoreSubMenu = useDebounceFn(() => {
   mountTimeout.value = setTimeout(() => {
     if (!app.MenuSetting.subMenu.collapsed) {
-      // 刷新主栏菜单
       if (!app.isMobile && !isTopBar.value)
         mainSidebarRef.value?.refreshMainMenu()
       else if (!app.isMobile)
@@ -104,7 +105,7 @@ const handleAction = (op: string, _val: any) => {
     <MainSidebar v-if="!app.isMobile && !isTopBar" ref="mainSidebarRef" @key-change="handleMainMenuKeyChange" />
     <!-- Sidebar (Desktop): Sub Sidebar. 侧边栏(电脑端):副栏。 -->
     <SubSidebar
-      v-if="!app.isMobile && (!isTopBar || app.MenuSetting.topMenu.showSubMenu)"
+      v-if="!app.isMobile && (!isTopBar || app.MenuSetting.topMenu.showSubMenu)" ref="subSidebarRef"
       :parent-menu-key="mainMenuRootKey"
     />
 

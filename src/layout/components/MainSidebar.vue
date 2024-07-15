@@ -10,6 +10,7 @@ const { t } = useI18n()
 const app = useAppStore()
 const route = useRoute()
 const fullRoutes = getFullRoutes()
+console.log('fullRoutes:', fullRoutes)
 const mainMenuRoutes = fullRoutes.filter(route => route.meta.parentName === 'root').filter(route => !route.meta?.hidden) ?? []
 
 /** Selected Item in main-menu 主栏菜单选中项 */

@@ -19,19 +19,32 @@ export function mapRoutesToElMenuItem(
   loadChild: boolean = true,
 ) {
   const childRoutes = fullRoutes.filter(r => r.meta.parentName === route.name)
-  if (childRoutes.length > 0 && loadChild) {
-    const menuSubChild = childRoutes.map(childRoute => mapRoutesToElMenuItem(childRoute, fullRoutes, t))
-    return h(
-      ElSubMenu,
-      { index: route.name as string },
-      {
-        default: () => menuSubChild,
-        title: () => [
-          h('i', { class: `el-icon ${route.meta?.icon}` }),
-          h('span', { class: 'text' }, `${t((route.meta?.title || route.name || route.path) as string)}`),
-        ],
-      },
-    )
+  if (childRoutes.length > 0) {
+    if (loadChild) {
+      return h(
+        ElSubMenu,
+        { index: route.name as string },
+        {
+          default: () => childRoutes.map(childRoute => mapRoutesToElMenuItem(childRoute, fullRoutes, t)),
+          title: () => [
+            h('i', { class: `el-icon ${route.meta?.icon}` }),
+            h('span', { class: 'text' }, `${t((route.meta?.title || route.name || route.path) as string)}`),
+          ],
+        },
+      )
+    }
+    else {
+      return h(
+        ElMenuItem,
+        { index: route.name as string },
+        {
+          default: () => [
+            h('i', { class: `el-icon ${route.meta?.icon}` }),
+            h('span', { class: 'text' }, `${t((route.meta?.title || route.name || route.path) as string)}`),
+          ],
+        },
+      )
+    }
   }
   else {
     return h(

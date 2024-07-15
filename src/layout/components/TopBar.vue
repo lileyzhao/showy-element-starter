@@ -26,13 +26,15 @@ const isTopBarLayout = computed(() => menuSetting.value.menuPosition === MenuPos
 const showMainMenuStatusButton = computed(() => menuSetting.value.buttons.includes(MenuButtonEnum.MainMenuStatus))
 
 /** Selected item in top menu 顶栏菜单选中项 */
-const topMenuKey = ref<string[]>()
+const topMenuKey = ref<string | undefined>()
 
 /** Top menu items 顶栏菜单项 */
 const topMenuItems = computed(() => {
   const routers = fullRoutes.filter(route => route.meta.parentName === 'root').filter(route => !route.meta?.hidden) ?? []
   return routers.map(route => mapRoutesToElMenuItem(route, fullRoutes, t, !menuSetting.value.topMenu.showSubMenu))
 })
+
+const showLogo = computed(() => isTopBarLayout.value && (!menuSetting.value.topMenu.showSubMenu || fullRoutes.filter(r => r.meta.parentName === topMenuKey.value).length === 0))
 
 /** Menu state switch icon 菜单状态切换图标 */
 const menuStateIcon = computed(() => {
@@ -44,8 +46,13 @@ const menuStateIcon = computed(() => {
 const toggleMainMenu = () => app.isMobile ? emit('action', 'toggleMobileDrawer') : app.toggleMainMenuState()
 
 const refreshTopMenu = () => {
-  topMenuKey.value = [(menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string]
-  emit('keyChange', toRaw(topMenuKey.value))
+  // This is to manage the selected item by forcing a refresh of the menu component
+  // 这里是为了强制刷新菜单组件来达到控制选中项
+  topMenuKey.value = undefined
+  nextTick(() => {
+    topMenuKey.value = (menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string
+    emit('keyChange', toRaw(topMenuKey.value))
+  })
 }
 
 /** show theme drawer 显示主题设置抽屉 */
@@ -62,7 +69,10 @@ const toggleLanguage = (lang: string) => {
   })
 }
 
-const onTopMenuKeyChange = (key: string) => emit('keyChange', key)
+const onTopMenuKeyChange = (key: string) => {
+  topMenuKey.value = key
+  emit('keyChange', key)
+}
 
 const profileOptions = computed(() => [
   {
@@ -94,7 +104,7 @@ const profileSelect = (info: any) => {
 }
 
 onMounted(() => {
-  topMenuKey.value = [(menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string]
+  topMenuKey.value = (menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string
 })
 
 const langs = computed(() => availableLocales.map(locale => ({ label: locale, key: locale })))
@@ -119,10 +129,13 @@ defineExpose({ refreshTopMenu })
         <span v-if="!app.isMobile" font-size-3 text-gray>←{{ t(MENU_STATE_TEXT[menuSetting.menuState!]) }}</span>
       </div>
       <!-- Top logo 顶栏Logo -->
-      <Logo v-if="isTopBarLayout && !menuSetting.topMenu.showSubMenu" flex-nowrap b-r-1 px-28px />
+      <Logo v-if="showLogo" flex-nowrap b-r-1 px-28px />
       <!-- Top menu 顶栏菜单 -->
       <div flex-1>
-        <el-menu v-if="!app.isMobile && isTopBarLayout" mode="horizontal" class="top-menu b-b-none!" @select="onTopMenuKeyChange">
+        <el-menu
+          v-if="!app.isMobile && isTopBarLayout" mode="horizontal" class="top-menu b-b-none!"
+          :default-active="topMenuKey" @select="onTopMenuKeyChange"
+        >
           <template #default>
             <component :is="menuItem" v-for="menuItem in topMenuItems" :key="menuItem.key" />
           </template>

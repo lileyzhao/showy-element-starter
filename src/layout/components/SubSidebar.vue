@@ -26,6 +26,19 @@ const subMenuItems = computed(() => {
     return fullRoutes.filter(route => route.meta.parentName === props.parentMenuKey).map(route => mapRoutesToElMenuItem(route, fullRoutes, t, true))
   else return []
 })
+
+/** Refresh main menu 刷新副栏菜单 */
+const refreshSubMenu = () => {
+  // This is to manage the selected item by forcing a refresh of the menu component
+  // 这里是为了强制刷新菜单组件来达到控制选中项
+  subMenuKey.value = undefined
+  nextTick(() => {
+    subMenuKey.value = route.name as string
+  })
+}
+
+/** Exposes 公开对象 */
+defineExpose({ refreshSubMenu })
 </script>
 
 <template>
@@ -48,7 +61,7 @@ const subMenuItems = computed(() => {
       </el-header>
       <el-main class="p0!">
         <!-- Sub-menu 副栏菜单 -->
-        <el-menu class="sub-menu b-r-none!" unique-opened :default-active="subMenuKey">
+        <el-menu v-if="subMenuKey" class="sub-menu b-r-none!" unique-opened :default-active="subMenuKey">
           <template #default>
             <component :is="menuItem" v-for="menuItem in subMenuItems" :key="menuItem.key" />
           </template>
