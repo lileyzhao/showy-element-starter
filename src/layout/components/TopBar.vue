@@ -62,10 +62,7 @@ const toggleLanguage = (lang: string) => {
   })
 }
 
-const onTopMenuKeyChange = (item: any) => {
-  console.log(item)
-  emit('keyChange', item.key)
-}
+const onTopMenuKeyChange = (key: string) => emit('keyChange', key)
 
 const profileOptions = computed(() => [
   {
@@ -125,7 +122,7 @@ defineExpose({ refreshTopMenu })
       <Logo v-if="isTopBarLayout && !menuSetting.topMenu.showSubMenu" flex-nowrap b-r-1 px-28px />
       <!-- Top menu 顶栏菜单 -->
       <div flex-1>
-        <el-menu v-if="!app.isMobile && isTopBarLayout" mode="horizontal" class="top-menu b-b-none!">
+        <el-menu v-if="!app.isMobile && isTopBarLayout" mode="horizontal" class="top-menu b-b-none!" @select="onTopMenuKeyChange">
           <template #default>
             <component :is="menuItem" v-for="menuItem in topMenuItems" :key="menuItem.key" />
           </template>

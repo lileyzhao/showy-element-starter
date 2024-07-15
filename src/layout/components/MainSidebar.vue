@@ -57,9 +57,6 @@ const refreshMainMenu = () => {
   })
 }
 
-/** Style class for logo logo的样式类 */
-const logoClass = computed(() => !app.IsDarkMode && app.MenuSetting.mainMenu.inverted ? 'xb-bl-gray2! xb-b-1!' : '')
-
 onMounted(refreshMainMenu)
 
 watch(() => app.MenuSetting.subMenu.collapsed, refreshMainMenu)
@@ -76,7 +73,7 @@ defineExpose({ refreshMainMenu })
   >
     <el-container class="h-full">
       <el-header
-        :class="logoClass" :style="{
+        :style="{
           backgroundColor: mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent',
           padding: 0,
           height: 'auto',

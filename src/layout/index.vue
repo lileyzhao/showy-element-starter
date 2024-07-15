@@ -19,11 +19,8 @@ const topBarRef = ref<InstanceType<typeof TopBar>>()
 const mobileDrawerRef = ref<InstanceType<typeof MobileDrawer>>()
 const themeDrawerRef = ref<InstanceType<typeof ThemeDrawer>>()
 
-// Get menu settings from the app store. 从应用存储中获取菜单设置。
-const menuSetting = computed(() => app.MenuSetting)
-
 /** Whether the menu is in the top bar layout. 是否顶栏菜单布局。 */
-const isTopBar = computed(() => menuSetting.value.menuPosition === MenuPositionEnum.TOP_BAR)
+const isTopBar = computed(() => app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
 
 /** Selected item in the main menu. 主栏菜单选中项。 */
 const mainMenuKey = ref<string>()
@@ -57,7 +54,7 @@ const handleMainMenuKeyChange = (key: string) => {
 /** Restore the sub-menu when the mouse enters the content area. 复原副栏菜单(当鼠标移入内容区时)。 */
 const restoreSubMenu = useDebounceFn(() => {
   mountTimeout.value = setTimeout(() => {
-    if (!menuSetting.value.subMenu.collapsed) {
+    if (!app.MenuSetting.subMenu.collapsed) {
       // 刷新主栏菜单
       if (!app.isMobile && !isTopBar.value)
         mainSidebarRef.value?.refreshMainMenu()
@@ -85,7 +82,7 @@ onMounted(async () => {
   window.addEventListener('resize', triggerMobileMode)
 
   // Update the main menu. 更新主栏菜单。
-  // mainMenuKey.value = (menuSetting.value.subMenu.collapsed ? route.name : route.matched[1].name) as string
+  // mainMenuKey.value = (app.MenuSetting.subMenu.collapsed ? route.name : route.matched[1].name) as string
 })
 
 onUnmounted(() => {
@@ -107,7 +104,7 @@ const handleAction = (op: string, _val: any) => {
     <MainSidebar v-if="!app.isMobile && !isTopBar" ref="mainSidebarRef" @key-change="handleMainMenuKeyChange" />
     <!-- Sidebar (Desktop): Sub Sidebar. 侧边栏(电脑端):副栏。 -->
     <SubSidebar
-      v-if="!app.isMobile && (!isTopBar || menuSetting.topMenu.showSubMenu)"
+      v-if="!app.isMobile && (!isTopBar || app.MenuSetting.topMenu.showSubMenu)"
       :parent-menu-key="mainMenuRootKey"
     />
 

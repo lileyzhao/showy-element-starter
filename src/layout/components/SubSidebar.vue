@@ -22,7 +22,7 @@ const subMenuRoutes = computed(() => {
 
 /** sub-menu items 副栏菜单项 */
 const subMenuItems = computed(() => {
-  if (!app.MenuSetting.subMenu.collapsed && subMenuRoutes.value.length > 0)
+  if ((!app.MenuSetting.subMenu.collapsed || app.MenuSetting.topMenu.showSubMenu) && subMenuRoutes.value.length > 0)
     return fullRoutes.filter(route => route.meta.parentName === props.parentMenuKey).map(route => mapRoutesToElMenuItem(route, fullRoutes, t, true))
   else return []
 })
@@ -31,8 +31,9 @@ const subMenuItems = computed(() => {
 <template>
   <!-- Sidebar (desktop): Sub-sidebar 侧边栏(电脑端):副栏 -->
   <el-aside
-    v-if="subMenuItems.length > 0 && !app.MenuSetting.subMenu.collapsed" :width="`${app.MenuSetting.subMenu.width}px`"
-    class="h-100vh of-x-hidden!" style="border-right:1px solid var(--el-border-color);"
+    v-if="subMenuItems.length > 0 && (!app.MenuSetting.subMenu.collapsed || app.MenuSetting.topMenu.showSubMenu)"
+    :width="`${app.MenuSetting.subMenu.width}px`" class="h-100vh of-x-hidden!"
+    style="border-right:1px solid var(--el-border-color);"
   >
     <el-container class="h-full">
       <el-header
