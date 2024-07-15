@@ -37,6 +37,30 @@ const refreshSubMenu = () => {
   })
 }
 
+/** Selected Item in main-menu 主栏菜单选中项 */
+const mainMenuKey = ref<string>()
+
+/** Collapsed State of main-menu 主栏菜单收缩状态 */
+const collMainMenu = computed({
+  get: () => app.MenuSetting.mainMenu.collapsed,
+  set: val => app.setMenuSetting({ mainMenu: { collapsed: val } }),
+})
+
+/** Collapsed State of sub-menu 副栏菜单收缩状态 */
+const collSubMenu = computed({
+  get: () => app.MenuSetting.subMenu.collapsed,
+  set: (val) => {
+    if (app.MenuSetting.subMenu.collapsed !== val)
+      app.setMenuSetting({ subMenu: { collapsed: val } })
+  },
+})
+
+/** Main column reverse color 主栏反转颜色 */
+const mainMenuInverted = computed({
+  get: () => app.MenuSetting.mainMenu.inverted,
+  set: val => app.setMenuSetting({ mainMenu: { inverted: val } }),
+})
+
 const visible = computed(() => {
   if (app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
     return app.MenuSetting.topMenu.showSubMenu && subMenuRoutes.value.length > 0
@@ -69,6 +93,14 @@ defineExpose({ refreshSubMenu })
           </template>
         </el-menu>
       </el-main>
+      <el-footer class="h-auto! px-0!">
+        <div h-8 w-full flex justify-right p-r-2>
+          <div
+            class="i-carbon:side-panel-close cursor-pointer text-5 hover:color-primary"
+            @click="collSubMenu = !collSubMenu"
+          />
+        </div>
+      </el-footer>
     </el-container>
   </el-aside>
 </template>

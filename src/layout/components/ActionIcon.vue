@@ -13,13 +13,9 @@ const props = defineProps<{
   textClass?: string
   /** class for the icon 图标的类 */
   iconClass?: string
-  /** hover class in dark mode 暗模式下的悬停的类 */
-  hoverClassDark?: string
-  /** hover class in light mode 亮模式下的悬停的类 */
-  hoverClassLight?: string
 }>()
 
-const defaultBtnClass = 'px-2.6! py-2.4! h-auto! ml-0! dark:text-white! text-black!'
+const defaultBtnClass = 'px-2.6! py-2.4! h-auto! ml-0! dark:text-white! text-black! hover:color-primary!'
 const defaultIconClass = 'text-5 cursor-pointer'
 
 /** Button class 按钮类 */
@@ -36,5 +32,5 @@ const iconClass = computed(() => `${defaultIconClass} ${props.class ?? ''} ${pro
       <span v-if="text" :class="props.textClass">{{ props.text }}</span>
     </div>
   </el-button>
-  <div v-else :class="iconClass" />
+  <div v-else :class="iconClass" hover:color-primary />
 </template>

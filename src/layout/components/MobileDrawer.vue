@@ -31,11 +31,6 @@ const mobileMenuItems = computed(() => {
   return routers.map(route => mapRoutesToElMenuItem(route, fullRoutes, t, true))
 })
 
-/** Handle mobile menu key change 处理移动菜单键更改 */
-const handleMobileMenuKeyChange = (_: any) => {
-  drawerActive.value = false
-}
-
 const show = () => {
   drawerActive.value = true
 }
@@ -51,8 +46,8 @@ defineExpose({ show })
 
 <template>
   <el-drawer
-    v-model="drawerActive" class="mobile-drawer" :size="menuSetting.mainMenu.widthMobile" direction="ltr"
-    :closable="false" :with-header="false"
+    v-if="app.isMobile" v-model="drawerActive" class="mobile-drawer" :size="menuSetting.mainMenu.widthMobile"
+    direction="ltr" :closable="false" :with-header="false"
   >
     <template #footer>
       <div w-full>
@@ -62,7 +57,7 @@ defineExpose({ show })
     <div style="border-bottom:1px solid rgba(255, 255, 255, 0.09);padding-left: 12px">
       <Logo flex-nowrap px-28px />
     </div>
-    <el-menu class="b-r-none!">
+    <el-menu class="b-r-none!" @select="drawerActive.value = false">
       <template #default>
         <component :is="menuItem" v-for="menuItem in mobileMenuItems" :key="menuItem.key" />
       </template>

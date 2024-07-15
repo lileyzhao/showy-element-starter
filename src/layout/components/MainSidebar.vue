@@ -4,13 +4,12 @@ import { useAppStore } from '@/store'
 import { mapRoutesToElMenuItemMain } from '@/utils/menuUtil'
 import { getFullRoutes } from '@/utils'
 
-const emit = defineEmits(['keyChange'])
+const emit = defineEmits(['menuChange'])
 
 const { t } = useI18n()
 const app = useAppStore()
 const route = useRoute()
 const fullRoutes = getFullRoutes()
-console.log('fullRoutes:', fullRoutes)
 const mainMenuRoutes = fullRoutes.filter(route => route.meta.parentName === 'root').filter(route => !route.meta?.hidden) ?? []
 
 /** Selected Item in main-menu 主栏菜单选中项 */
@@ -39,12 +38,11 @@ const mainMenuInverted = computed({
 
 /** main-menu item 主栏菜单项 */
 const mainMenuItems = computed(() => {
-  const mainMenuSetting = app.MenuSetting.mainMenu
-  return mainMenuRoutes.map(route => mapRoutesToElMenuItemMain(route, fullRoutes, t, app.MenuSetting.subMenu.collapsed, mainMenuSetting))
+  return mainMenuRoutes.map(route => mapRoutesToElMenuItemMain(route, fullRoutes, t, app.MenuSetting.subMenu.collapsed, app.MenuSetting.mainMenu))
 })
 
 /** Handle main menu key change 处理主菜单键变化 */
-const handleMainMenuKeyChange = (key: string) => emit('keyChange', key)
+const handleMainMenuChange = (key: string) => emit('menuChange', key)
 
 /** Refresh main menu 刷新主菜单 */
 const refreshMainMenu = () => {
@@ -53,10 +51,11 @@ const refreshMainMenu = () => {
   mainMenuKey.value = undefined
   nextTick(() => {
     mainMenuKey.value = (app.MenuSetting.subMenu.collapsed ? route.name : route.matched[1].name) as string
-    console.log('refreshMainMenu:mainMenuKey.value:', mainMenuKey.value)
-    handleMainMenuKeyChange(mainMenuKey.value)
+    handleMainMenuChange(mainMenuKey.value)
   })
 }
+
+const visible = computed(() => !app.isMobile && !app.IsTopBar)
 
 onMounted(refreshMainMenu)
 
@@ -69,6 +68,7 @@ defineExpose({ refreshMainMenu })
 <template>
   <!-- Sidebar (Desktop): Main Column 侧边栏(电脑端):主栏 -->
   <el-aside
+    v-if="visible"
     :width="`${collMainMenu ? app.MenuSetting.mainMenu.widthColl : app.MenuSetting.subMenu.collapsed ? app.MenuSetting.mainMenu.widthSingle : app.MenuSetting.mainMenu.width}px`"
     style="height:100vh;border-right:1px solid var(--el-border-color);z-index:1;"
   >
@@ -90,41 +90,26 @@ defineExpose({ refreshMainMenu })
           v-if="mainMenuKey" class="main-menu h-full! w-full! b-r-none!"
           :background-color="mainMenuInverted ? 'var(--el-bg-color-dark)' : undefined"
           :text-color="mainMenuInverted ? '#bbb' : undefined" unique-opened :default-active="mainMenuKey"
-          :collapse="collMainMenu && collSubMenu" @select="handleMainMenuKeyChange"
+          :collapse="collMainMenu && collSubMenu" @select="handleMainMenuChange"
         >
           <template #default>
             <component :is="menuItem" v-for="menuItem in mainMenuItems" :key="menuItem.key" />
           </template>
         </el-menu>
       </el-main>
-      <el-footer class="h-auto! px-0! py-3!" :style="`background-color:${mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent'};`">
-        <div v-if="!app.IsDarkMode && !collMainMenu" relative h-20px w-full>
+      <el-footer
+        class="h-auto! px-0!"
+        :style="`background-color:${mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent'};`"
+      >
+        <div v-if="!app.IsDarkMode" :class="`${collMainMenu ? 'flex justify-around' : 'relative h-8 w-full'}`">
           <div
-            :class="`left-50% -translate-x-1/2 i-line-md:${mainMenuInverted ? 'sunny-filled hover:text-yellow text-white' : 'moon-filled hover:text-purple'}`"
-            absolute cursor-pointer text-18px @click="mainMenuInverted = !mainMenuInverted"
+            :class="`${!collMainMenu && 'left-50% -translate-x-1/2 absolute'} i-line-md:${mainMenuInverted ? 'sunny-filled text-white' : 'moon-filled'}  hover:color-primary`"
+            cursor-pointer text-5 @click="mainMenuInverted = !mainMenuInverted"
           />
           <div
-            v-if="collSubMenu" :class="`i-carbon:side-panel-close ${mainMenuInverted ? 'text-white' : ''}`" absolute
-            right-2 rotate-180 cursor-pointer text-18px @click="collSubMenu = !collSubMenu"
-          />
-          <div
-            v-else :class="`i-carbon:side-panel-close ${mainMenuInverted ? 'text-white' : ''}`" absolute right-2
-            cursor-pointer text-18px @click="collSubMenu = !collSubMenu"
-          />
-        </div>
-        <div v-else-if="!app.IsDarkMode && collMainMenu" bottom-12px w-full flex justify-center gap-2.5>
-          <div
-            :class="`i-line-md:${mainMenuInverted ? 'sunny-filled hover:text-yellow text-white' : 'moon-filled hover:text-purple'}`"
-            cursor-pointer text-18px @click="mainMenuInverted = !mainMenuInverted"
-          />
-          <div
-            v-if="collSubMenu" :class="`i-carbon:side-panel-close ${mainMenuInverted ? 'text-white' : ''}`"
-            rotate-180 cursor-pointer text-18px @click="collSubMenu = !collSubMenu"
-          />
-
-          <div
-            v-else :class="`i-carbon:side-panel-close ${mainMenuInverted ? 'text-white' : ''}`" cursor-pointer
-            text-18px @click="collSubMenu = !collSubMenu"
+            v-if="collSubMenu"
+            :class="`${!collMainMenu && 'right-2 absolute'} i-carbon:side-panel-open hover:color-primary ${mainMenuInverted && 'text-white'}`"
+            cursor-pointer text-5 @click="collSubMenu = !collSubMenu"
           />
         </div>
       </el-footer>

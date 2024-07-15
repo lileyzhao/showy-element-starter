@@ -1,8 +1,8 @@
 import { type LocaleSetting, MenuButtonEnum, MenuPositionEnum, type MenuSetting, ThemeModeEnum } from '@/shared'
 
 /**
- * Application setting version, mainly used to clear the client configuration cache,
- * 应用设置版本，主要用于清除客户端配置缓存，
+ * Application setting version, mainly used to clear the client configuration cache.
+ * 应用设置版本，主要用于清除客户端配置缓存。
  */
 export const version = '0.1.0'
 

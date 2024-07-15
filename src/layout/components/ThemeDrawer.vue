@@ -36,7 +36,7 @@ defineExpose({ show })
 </script>
 
 <template>
-  <el-drawer v-model="drawerActive" force-render :width="325" :title="t('theme.themeDrawerTitle')" :closable="false">
+  <el-drawer v-if="!app.isMobile" v-model="drawerActive" force-render :width="325" :title="t('theme.themeDrawerTitle')" :closable="false">
     <el-divider content-position="left" border-style="dashed">
       {{ t('theme.themeMode.title') }}
     </el-divider>

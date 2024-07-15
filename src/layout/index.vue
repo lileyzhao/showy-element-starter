@@ -6,7 +6,7 @@ import ThemeDrawer from './components/ThemeDrawer.vue'
 import MobileDrawer from './components/MobileDrawer.vue'
 import TopBar from './components/TopBar.vue'
 import { useAppStore } from '@/store'
-import { MenuPositionEnum, ScreenEnum } from '@/shared'
+import { ScreenEnum } from '@/shared'
 import { getFullRoutes } from '@/utils'
 
 const app = useAppStore()
@@ -19,9 +19,6 @@ const subSidebarRef = ref<InstanceType<typeof SubSidebar>>()
 const topBarRef = ref<InstanceType<typeof TopBar>>()
 const mobileDrawerRef = ref<InstanceType<typeof MobileDrawer>>()
 const themeDrawerRef = ref<InstanceType<typeof ThemeDrawer>>()
-
-/** Whether the menu is in the top bar layout. 是否顶栏菜单布局。 */
-const isTopBar = computed(() => app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
 
 /** Selected item in the main menu. 主栏菜单选中项。 */
 const mainMenuKey = ref<string>()
@@ -45,7 +42,7 @@ const mainMenuRootKey = computed(() => {
 })
 
 /** Main menu selected item changed. 主栏菜单选中项改变。 */
-const handleMainMenuKeyChange = (key: string) => {
+const handleMainMenuChange = (key: string) => {
   if (mainMenuKey.value === key)
     return
   mainMenuKey.value = key
@@ -57,7 +54,7 @@ const handleMainMenuKeyChange = (key: string) => {
 const restoreSubMenu = useDebounceFn(() => {
   mountTimeout.value = setTimeout(() => {
     if (!app.MenuSetting.subMenu.collapsed) {
-      if (!app.isMobile && !isTopBar.value)
+      if (!app.isMobile && !app.IsTopBar)
         mainSidebarRef.value?.refreshMainMenu()
       else if (!app.isMobile)
         topBarRef.value?.refreshTopMenu()
@@ -102,15 +99,14 @@ const handleAction = (op: string, _val: any) => {
 <template>
   <el-container has-sider style="min-height: 100vh">
     <!-- Sidebar (Desktop): Main Sidebar. 侧边栏(电脑端):主栏。 -->
-    <MainSidebar v-if="!app.isMobile && !isTopBar" ref="mainSidebarRef" @key-change="handleMainMenuKeyChange" />
+    <MainSidebar ref="mainSidebarRef" @menu-change="handleMainMenuChange" />
     <!-- Sidebar (Desktop): Sub Sidebar. 侧边栏(电脑端):副栏。 -->
     <SubSidebar ref="subSidebarRef" :parent-menu-key="mainMenuRootKey" />
-
     <!-- Right main area. 右侧主体区。 -->
     <el-container class="h-100vh flex flex-col!">
       <!-- Top bar area. 头部横栏区。 -->
       <TopBar
-        ref="topBarRef" @action="handleAction" @key-change="handleMainMenuKeyChange"
+        ref="topBarRef" @action="handleAction" @key-change="handleMainMenuChange"
         @mouseenter="cancelRestoreSubMenu"
       />
       <!-- Content area. 内容区。 -->
@@ -130,12 +126,10 @@ const handleAction = (op: string, _val: any) => {
         <el-backtop target="#app-main-content" :visibility-height="100" />
       </el-main>
     </el-container>
-
     <!-- Drawer (Mobile). 抽屉栏(手机端)。 -->
-    <MobileDrawer v-if="app.isMobile" ref="mobileDrawerRef" />
-
+    <MobileDrawer ref="mobileDrawerRef" />
     <!-- Theme settings drawer. 主题设置抽屉栏。 -->
-    <ThemeDrawer v-if="!app.isMobile" ref="themeDrawerRef" />
+    <ThemeDrawer ref="themeDrawerRef" />
   </el-container>
 </template>
 

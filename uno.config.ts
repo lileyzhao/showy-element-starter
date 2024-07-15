@@ -55,6 +55,7 @@ export default defineConfig({
   rules: [
     // 例如，添加一个自定义动画
     // ['animate-spin', { animation: 'spin 1s linear infinite' }],
+    ['color-primary', { color: 'var(--el-color-primary)' }],
   ],
   // 源代码转换器，参考https://unocss.dev/config/#transformers
   // transformerDirectives()：指令转换，参考https://unocss.dev/transformers/directives

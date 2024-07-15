@@ -96,6 +96,10 @@ export const useAppStore = defineStore('appSetting', {
       }
       return mset
     },
+    /** Is topBar mode 是否顶栏模式 */
+    IsTopBar(): boolean {
+      return this.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR
+    },
   },
   actions: {
     /** Set theme mode 设置主题模式 */
