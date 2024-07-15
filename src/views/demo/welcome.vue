@@ -12,18 +12,6 @@ const updateTime = () => {
   currentTime.value = now.toLocaleTimeString()
 }
 
-const showModal = ref(false)
-// 定义异步组件
-const asyncComponent = defineAsyncComponent(() => import('./about.vue'))
-
-const buttonTypes: ButtonType[] = ['primary', 'default', 'dashed', 'link', 'text']
-
-const buttonModels = [{}, { danger: true }, {}, { disabled: true }]
-const buttonModelsShuffled: any[][] = []
-for (let i = 0; i < buttonTypes.length; i++) {
-  buttonModelsShuffled.push(buttonModels.slice())
-}
-
 onMounted(() => {
   updateTime()
   setInterval(updateTime, 1000)
@@ -32,7 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <a-card class="m--8px!" :bordered="false" :body-style="{ padding: 0 }">
+  <el-card class="m--8px! b-0!" shadow="never" :body-style="{ padding: 0 }">
     <div flex flex-col items-center justify-center gap-y-4 pt-4>
       <div
         :class="`i-line-md:${app.IsDarkMode ? 'moon-filled-loop text-purple' : 'sunny-filled-loop text-yellow'}`"
@@ -47,17 +35,12 @@ onMounted(() => {
       <div decoration-underline>
         {{ route?.path }}
       </div>
-      <a-space>
-        <a-date-picker type="date" w-48 />
-        <a-time-picker w-48 />
-      </a-space>
-      <a-space v-for="(bt, bti) in buttonTypes" :key="bti">
-        <a-button v-for="(bm, bmi) in buttonModelsShuffled[bti]" :key="bmi" class="w-23!" :type="bt" v-bind="bm">
-          Button
-        </a-button>
-      </a-space>
+      <el-space>
+        <el-date-picker type="date" w-48 />
+        <el-time-picker w-48 />
+      </el-space>
     </div>
-    <div class="mb-4">
+    <div class="m-4 text-center">
       <el-button>Default</el-button>
       <el-button type="primary">
         Primary
@@ -78,10 +61,7 @@ onMounted(() => {
     <div class="h-380vh flex flex-col items-center justify-end pb-4 text-4">
       ... {{ t('intro') }} ...
     </div>
-    <a-modal v-model:open="showModal" style="top: 20px" width="70%" :footer="null">
-      <component :is="asyncComponent" />
-    </a-modal>
-  </a-card>
+  </el-card>
 </template>
 
 <style scoped lang="scss">

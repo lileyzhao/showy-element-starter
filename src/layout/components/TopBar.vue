@@ -62,7 +62,7 @@ const toggleLanguage = (lang: string) => {
   })
 }
 
-const onTopMenuKeyChange = (item: SelectInfo) => {
+const onTopMenuKeyChange = (item: any) => {
   console.log(item)
   emit('keyChange', item.key)
 }
@@ -77,11 +77,9 @@ const profileOptions = computed(() => [
       avatar: 'https://07akioni.oss-cn-beijing.aliyuncs.com/demo1.JPG',
     },
   },
-  { type: 'divider', key: 'header-divider' },
-  { key: 'profile', icon: 'i-carbon:user-avatar-filled-alt', label: t('profileMenu.profile') },
+  { key: 'profile', icon: 'i-carbon:user-avatar-filled-alt', label: t('profileMenu.profile'), divided: true },
   { key: 'settings', icon: 'i-carbon:settings', label: t('profileMenu.settings') },
-  { type: 'divider', key: 'logout-divider' },
-  { key: 'logout', icon: 'i-carbon:logout', label: t('profileMenu.logout') },
+  { key: 'logout', icon: 'i-carbon:logout', label: t('profileMenu.logout'), divided: true },
 ])
 
 const profileSelect = (info: any) => {
@@ -110,8 +108,8 @@ defineExpose({ refreshTopMenu })
 
 <template>
   <!-- Left section of the top bar 头部左侧区 -->
-  <a-layout-header
-    z-1 p-inline-0
+  <el-header
+    bordered
     :style="{ background: app.IsDarkMode ? '' : '#fff', padding: 0, height: 'auto', lineHeight: 'auto', borderBottom: `1px solid var(--el-border-color)` }"
   >
     <div h-header flex-right-center gap-x-4>
@@ -149,18 +147,21 @@ defineExpose({ refreshTopMenu })
           icon-class="dark:i-line-md:sunny-filled i-line-md:moon-filled" hover-class-dark="text-yellow!"
           @click="app.toggleThemeMode"
         />
-        <a-dropdown v-if="app.LocaleSetting.showButton && langs.length > 2" :trigger="['click']">
+        <el-dropdown
+          v-if="app.LocaleSetting.showButton && langs.length > 2" trigger="click"
+          @command="(command) => toggleLanguage(command as string)"
+        >
           <div flex-y-center>
             <ActionIcon button icon-class="i-carbon:language" />
           </div>
-          <template #overlay>
-            <a-menu @click="(info) => toggleLanguage(info.key as string)">
-              <a-menu-item v-for="lang in langs" :key="lang.key">
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-for="lang in langs" :key="lang.key" :command="lang.key">
                 {{ lang.label }}
-              </a-menu-item>
-            </a-menu>
+              </el-dropdown-item>
+            </el-dropdown-menu>
           </template>
-        </a-dropdown>
+        </el-dropdown>
         <ActionIcon
           v-if="app.LocaleSetting.showButton && langs.length === 2" button icon-class="i-carbon:language"
           @click="toggleLanguage"
@@ -170,21 +171,21 @@ defineExpose({ refreshTopMenu })
           icon-class="i-carbon:cookie" @click="toggleThemeDrawer"
         />
         <!-- profile 个人资料 -->
-        <a-dropdown :trigger="['click']">
+        <el-dropdown trigger="click" @command="profileSelect">
           <ActionIcon button icon-class="i-carbon:user-avatar text-6" :text="t('author')" />
-          <template #overlay>
-            <a-menu @click="profileSelect">
+          <template #dropdown>
+            <el-dropdown-menu>
               <template v-for="item in profileOptions" :key="item.key">
-                <a-menu-divider v-if="item.type === 'divider'" :key="item.key" />
-                <a-menu-item v-if="item.type !== 'divider'" :key="item.key">
+                <!-- <el-menu-divider v-if="item.type === 'divider'" :key="item.key" /> -->
+                <el-dropdown-item v-if="item.type !== 'divider'" :key="item.key" :divided="item.divided">
                   <template v-if="item.type === 'header'">
                     <div mt-2 flex gap-2>
-                      <a-avatar :src="item.meta?.avatar" :size="40" mt-1 />
+                      <el-avatar :src="item.meta?.avatar" :size="40" mt-1 />
                       <div w-160px>
                         <div>
                           {{ item.meta?.name }}
                         </div>
-                        <div text-12px text-gray5>
+                        <div whitespace-break-spaces text-12px text-gray5>
                           {{ item.meta?.intro }}
                         </div>
                       </div>
@@ -193,14 +194,14 @@ defineExpose({ refreshTopMenu })
                   <template v-else>
                     {{ item.label }}
                   </template>
-                </a-menu-item>
+                </el-dropdown-item>
               </template>
-            </a-menu>
+            </el-dropdown-menu>
           </template>
-        </a-dropdown>
+        </el-dropdown>
       </div>
     </div>
-  </a-layout-header>
+  </el-header>
 </template>
 
 <style scoped lang="scss">

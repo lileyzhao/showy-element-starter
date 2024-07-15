@@ -13,14 +13,19 @@ const onLogin = () => router.push('/')
 
 <template>
   <div mx-auto mt-30 w-380px>
-    <a-card :title="t('login.title')">
-      <a-form :model="model">
-        <a-form-item path="account" label="账号">
-          <a-input v-model="model.account" placeholder="请输入账号" @keydown.enter.prevent />
-        </a-form-item>
-        <a-form-item path="password" label="密码">
-          <a-input v-model="model.password" type="password" placeholder="请输入密码" @keydown.enter.prevent />
-        </a-form-item>
+    <el-card>
+      <template #header>
+        <div>
+          <span>{{ t('login.title') }}</span>
+        </div>
+      </template>
+      <el-form :model="model">
+        <el-form-item path="account" label="账号">
+          <el-input v-model="model.account" placeholder="请输入账号" @keydown.enter.prevent />
+        </el-form-item>
+        <el-form-item path="password" label="密码">
+          <el-input v-model="model.password" type="password" placeholder="请输入密码" @keydown.enter.prevent />
+        </el-form-item>
         <div flex items-center justify-between>
           <div flex-right-center gap-x-5>
             <ActionIcon
@@ -29,11 +34,11 @@ const onLogin = () => router.push('/')
             />
             <ActionIcon v-if="app.LocaleSetting.showButton" i-carbon-language @click="app.toggleLanguage" />
           </div>
-          <a-button type="primary" style="width: 120px" danger @click="onLogin">
+          <el-button type="primary" style="width: 120px" danger @click="onLogin">
             登 录
-          </a-button>
+          </el-button>
         </div>
-      </a-form>
-    </a-card>
+      </el-form>
+    </el-card>
   </div>
 </template>

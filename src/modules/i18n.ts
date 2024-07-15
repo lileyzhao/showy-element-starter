@@ -1,10 +1,8 @@
 import type { Locale } from 'vue-i18n'
 import { createI18n } from 'vue-i18n'
 import type { App } from 'vue'
-import enUS from 'ant-design-vue/es/locale/en_US'
-import zhCN from 'ant-design-vue/es/locale/zh_CN'
-import zhTW from 'ant-design-vue/es/locale/zh_TW'
-import type { Locale as ALocale } from 'ant-design-vue/es/locale-provider'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import zhTw from 'element-plus/es/locale/lang/zh-tw'
 
 // Create an i18n instance. 创建一个 i18n 实例。
 export const i18n = createI18n({
@@ -95,10 +93,10 @@ export function setupI18n(app: App<Element>) {
  * @param locale Language code (e.g., 'zh-CN', 'zh-TW'). 语言代码（例如 'zh-CN', 'zh-TW'）。
  * @returns Returns the corresponding ALocale or null if not found. 返回相应的 ALocale，如果未找到则返回 null。
  */
-export const getElementLocale = (locale: string | undefined | null): ALocale | undefined => {
+export const getElementLocale = (locale: string | undefined | null): any | undefined => {
   if (locale === 'zh-CN')
-    return zhCN
+    return zhCn
   if (locale === 'zh-TW')
-    return zhTW
+    return zhTw
   return undefined // Default to English in Element. Element 默认情况下为英语。
 }

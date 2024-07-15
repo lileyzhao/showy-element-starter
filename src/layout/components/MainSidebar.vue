@@ -75,7 +75,7 @@ defineExpose({ refreshMainMenu })
     style="height:100vh;border-right:1px solid var(--el-border-color);z-index:1;"
   >
     <el-container class="h-full">
-      <a-layout-header
+      <el-header
         :class="logoClass" :style="{
           backgroundColor: mainMenuInverted ? '#18181c' : 'transparent',
           padding: 0,
@@ -85,7 +85,7 @@ defineExpose({ refreshMainMenu })
         }"
       >
         <Logo w-full :hide-title="collMainMenu" />
-      </a-layout-header>
+      </el-header>
       <!-- Main Menu 主栏菜单 -->
       <el-main class="of-x-hidden! p0!">
         <el-menu

@@ -43,54 +43,54 @@ const latestBuildTime = BUILD_TIME
 </script>
 
 <template>
-  <a-card content-class="!p-8px" :bordered="false">
-    <a-space direction="vertical" :size="14" w-full>
-      <a-card :title="t('page.about.title')" :bordered="false" size="small" segmented class="card-wrapper">
+  <el-card content-class="!p-8px" class="m--8px! border-none!" shadow="never" :body-style="{ padding: 0 }">
+    <el-space direction="vertical" :size="14" fill w-full>
+      <el-card :header="t('page.about.title')" :bordered="false" size="small" segmented class="card-wrapper">
         <p>{{ t('page.about.introduction') }}</p>
-      </a-card>
-      <a-card :title="t('page.about.projectInfo.title')" :bordered="false" size="small" segmented class="card-wrapper">
-        <a-descriptions label-placement="left" bordered size="small" :column="column">
-          <a-descriptions-item :label="t('page.about.projectInfo.version')">
-            <a-tag :color="token.colorPrimary" b-rd-sm px-2 py-0.6 text-4 opacity-85>
+      </el-card>
+      <el-card
+        :header="t('page.about.projectInfo.title')" :bordered="false" size="small" segmented
+        class="card-wrapper"
+      >
+        <el-descriptions border size="small" :column="column">
+          <el-descriptions-item :label="t('page.about.projectInfo.version')">
+            <el-tag type="primary">
               {{ pkgJson.version }}
-            </a-tag>
-          </a-descriptions-item>
-          <a-descriptions-item :label="t('page.about.projectInfo.latestBuildTime')">
-            <a-tag :color="token.colorPrimary" b-rd-sm px-2 py-0.6 text-4 opacity-85>
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('page.about.projectInfo.latestBuildTime')">
+            <el-tag type="primary">
               {{ latestBuildTime }}
-            </a-tag>
-          </a-descriptions-item>
-          <a-descriptions-item :label="t('page.about.projectInfo.githubLink')">
-            <a
-              :style="`color:${token.colorPrimary}`" :href="pkg.homepage" target="_blank"
-              rel="noopener noreferrer"
-            >
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('page.about.projectInfo.githubLink')">
+            <el-link :href="pkg.homepage" target="_blank" rel="noopener noreferrer" type="primary">
               {{ t('page.about.projectInfo.githubLink') }}
-            </a>
-          </a-descriptions-item>
-          <a-descriptions-item :label="t('page.about.projectInfo.previewLink')">
-            <a :style="`color:${token.colorPrimary}`" :href="pkg.website" target="_blank" rel="noopener noreferrer">
+            </el-link>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('page.about.projectInfo.previewLink')">
+            <el-link :href="pkg.homepage" target="_blank" rel="noopener noreferrer" type="primary">
               {{ t('page.about.projectInfo.previewLink') }}
-            </a>
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-card>
-      <a-card :title="t('page.about.prdDep')" :bordered="false" size="small" segmented class="card-wrapper">
-        <a-descriptions label-placement="left" bordered size="small" :column="column">
-          <a-descriptions-item v-for="item in pkgJson.dependencies" :key="item.name" :label="item.name">
+            </el-link>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-card>
+      <el-card :header="t('page.about.prdDep')" :bordered="false" size="small" segmented class="card-wrapper">
+        <el-descriptions label-placement="left" border size="small" :column="column">
+          <el-descriptions-item v-for="item in pkgJson.dependencies" :key="item.name" :label="item.name">
             {{ item.version }}
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-card>
-      <a-card :title="t('page.about.devDep')" :bordered="false" size="small" segmented class="card-wrapper">
-        <a-descriptions label-placement="left" bordered size="small" :column="column">
-          <a-descriptions-item v-for="item in pkgJson.devDependencies" :key="item.name" :label="item.name">
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-card>
+      <el-card :header="t('page.about.devDep')" :bordered="false" size="small" segmented class="card-wrapper">
+        <el-descriptions label-placement="left" border size="small" :column="column">
+          <el-descriptions-item v-for="item in pkgJson.devDependencies" :key="item.name" :label="item.name">
             {{ item.version }}
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-card>
-    </a-space>
-  </a-card>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-card>
+    </el-space>
+  </el-card>
 </template>
 
 <style scoped></style>

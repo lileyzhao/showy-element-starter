@@ -36,8 +36,8 @@ onMounted(() => {
         {{ route?.path }}
       </div>
       <el-space>
-        <a-date-picker type="date" w-48 />
-        <a-time-picker w-48 />
+        <el-date-picker type="date" w-48 />
+        <el-time-picker w-48 />
       </el-space>
     </div>
     <div class="m-4 text-center">
