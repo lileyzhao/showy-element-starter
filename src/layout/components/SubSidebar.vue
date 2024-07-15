@@ -1,6 +1,4 @@
 <script setup lang="ts" name="Layout-SubSidebar">
-import type { RouteRecordRaw } from 'vue-router'
-import type { VNode } from 'vue'
 import { useAppStore } from '@/store'
 import Logo from '@/layout/components/Logo.vue'
 import { MenuPositionEnum } from '@/shared'
@@ -14,60 +12,26 @@ const { t } = useI18n()
 const app = useAppStore()
 const route = useRoute()
 const fullRoutes = getFullRoutes()
-// const subMenuRoutes = ref<RouteRecordRaw[]>([])
+
+/** Selected Item in sub-menu 副栏菜单选中项 */
+const subMenuKey = ref<string | undefined>(route.name as string)
+
 const subMenuRoutes = computed(() => {
   return props.parentMenuKey ? fullRoutes.filter(r => r.meta.parentName === (props.parentMenuKey || route.matched[1].name)) : []
 })
 
-/** Collapsed State of sub-menu 副栏菜单收缩状态 */
-const collSubMenu = computed({
-  get: () => app.MenuSetting.subMenu.collapsed,
-  set: (val) => {
-    if (app.MenuSetting.subMenu.collapsed !== val)
-      app.setMenuSetting({ subMenu: { collapsed: val } })
-  },
-})
-
-/** Selected Item in sub-menu 副栏菜单选中项 */
-const subMenuKey = ref<string>(route.name as string)
-
 /** sub-menu items 副栏菜单项 */
-const subMenuItems = ref<VNode[]>([])
-const getSubMenuItems = (mainMenuKey: string) => {
-  return fullRoutes.filter(route => route.meta.parentName === mainMenuKey).map(route => mapRoutesToElMenuItem(route, fullRoutes, t, true))
-}
-
-/** Refresh the sub-menu 刷新副栏菜单 */
-const refreshSubMenu = (mainMenuRootKey?: string) => {
-  // subMenuRoutes.value = fullRoutes.filter(r => r.meta.parentName === (mainMenuRootKey || route.matched[1].name))
-  // 更新副栏菜单 Update the sub-menu
-  if (!collSubMenu.value && subMenuRoutes.value.length > 0) {
-    subMenuItems.value = getSubMenuItems(mainMenuRootKey || route.matched[1].name as string)
-    subMenuKey.value = route.name as string
-  }
-  else { subMenuItems.value = [] }
-  console.log('subMenuKey:', subMenuKey.value)
-}
-
-// Do not delete: Removing onMounted will cause the menu to be blank during hot refresh
-// 勿删：删掉onMounted会导致热刷新时菜单空白
-onMounted(async () => {
-  refreshSubMenu()
+const subMenuItems = computed(() => {
+  if (!app.MenuSetting.subMenu.collapsed && subMenuRoutes.value.length > 0)
+    return fullRoutes.filter(route => route.meta.parentName === props.parentMenuKey).map(route => mapRoutesToElMenuItem(route, fullRoutes, t, true))
+  else return []
 })
-
-// 监控主菜单变化
-watch([() => props.parentMenuKey, collSubMenu], (_val) => {
-  refreshSubMenu(props.parentMenuKey)
-})
-
-/** Exposes 公开对象 */
-defineExpose({ refreshSubMenu })
 </script>
 
 <template>
   <!-- Sidebar (desktop): Sub-sidebar 侧边栏(电脑端):副栏 -->
   <el-aside
-    v-if="subMenuItems.length > 0 && !collSubMenu" :width="`${app.MenuSetting.subMenu.width}px`"
+    v-if="subMenuItems.length > 0 && !app.MenuSetting.subMenu.collapsed" :width="`${app.MenuSetting.subMenu.width}px`"
     class="h-100vh of-x-hidden!" style="border-right:1px solid var(--el-border-color);"
   >
     <el-container class="h-full">
