@@ -1,7 +1,7 @@
 <script setup lang="ts" name="Layout-TopBar">
 import Logo from '@/layout/components/Logo.vue'
 import { useAppStore } from '@/store'
-import { MENU_STATE_TEXT, MenuButtonEnum, MenuPositionEnum } from '@/shared'
+import { MENU_STATE_TEXT, MenuButtonEnum } from '@/shared'
 import ActionIcon from '@/layout/components/ActionIcon.vue'
 import { mapRoutesToElMenuItem } from '@/utils/menuUtil'
 import { availableLocales } from '@/modules/i18n'
@@ -19,9 +19,6 @@ const fullRoutes = getFullRoutes()
 /** Menu setting 菜单设置 */
 const menuSetting = computed(() => app.MenuSetting)
 
-/** Whether it is top bar layout 是否顶栏菜单布局 */
-const isTopBarLayout = computed(() => menuSetting.value.menuPosition === MenuPositionEnum.TOP_BAR)
-
 /** Whether to show main menu status switch button 是否显示主菜单状态切换按钮 */
 const showMainMenuStatusButton = computed(() => menuSetting.value.buttons.includes(MenuButtonEnum.MainMenuStatus))
 
@@ -33,8 +30,6 @@ const topMenuItems = computed(() => {
   const routers = fullRoutes.filter(route => route.meta.parentName === 'root').filter(route => !route.meta?.hidden) ?? []
   return routers.map(route => mapRoutesToElMenuItem(route, fullRoutes, t, !menuSetting.value.topMenu.showSubMenu))
 })
-
-const showLogo = computed(() => isTopBarLayout.value && (!menuSetting.value.topMenu.showSubMenu || fullRoutes.filter(r => r.meta.parentName === topMenuKey.value).length === 0))
 
 /** Menu state switch icon 菜单状态切换图标 */
 const menuStateIcon = computed(() => {
@@ -53,6 +48,12 @@ const refreshTopMenu = () => {
     topMenuKey.value = (menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string
     emit('keyChange', toRaw(topMenuKey.value))
   })
+}
+
+/** Toggle menu position 切换菜单位置 */
+const toggleMenuPosition = () => {
+  refreshTopMenu()
+  app.toggleMenuPosition()
 }
 
 /** show theme drawer 显示主题设置抽屉 */
@@ -105,9 +106,18 @@ const profileSelect = (info: any) => {
 
 onMounted(() => {
   topMenuKey.value = (menuSetting.value.topMenu.showSubMenu ? route.matched[1].name : route.name) as string
+  console.log('topMenuKey.value', topMenuKey.value)
 })
 
 const langs = computed(() => availableLocales.map(locale => ({ label: locale, key: locale })))
+
+const visible = computed(() => {
+  return {
+    leftSection: app.isMobile || (!app.IsTopBar && showMainMenuStatusButton),
+    logo: app.IsTopBar && (!menuSetting.value.topMenu.showSubMenu || fullRoutes.filter(r => r.meta.parentName === topMenuKey.value).length === 0),
+    menu: !app.isMobile && app.IsTopBar,
+  }
+})
 
 /** Exposes 公开对象 */
 defineExpose({ refreshTopMenu })
@@ -121,20 +131,17 @@ defineExpose({ refreshTopMenu })
   >
     <div h-header flex-right-center gap-x-4>
       <!-- Left section of the top bar 头部左侧区 -->
-      <div
-        v-if="app.isMobile || (!isTopBarLayout && showMainMenuStatusButton)" h-full flex flex-1 items-center gap-x-4
-        p-l-4
-      >
+      <div v-if="visible.leftSection" h-full flex flex-1 items-center gap-x-4 p-l-4>
         <div :class="menuStateIcon" cursor-pointer text-5 @click="toggleMainMenu" />
         <span v-if="!app.isMobile" font-size-3 text-gray>←{{ t(MENU_STATE_TEXT[menuSetting.menuState!]) }}</span>
       </div>
       <!-- Top logo 顶栏Logo -->
-      <Logo v-if="showLogo" flex-nowrap b-r-1 px-28px />
+      <Logo v-if="visible.logo" flex-nowrap px-28px style="border-right: 1px solid var(--el-border-color);" />
       <!-- Top menu 顶栏菜单 -->
       <div flex-1>
         <el-menu
-          v-if="!app.isMobile && isTopBarLayout" mode="horizontal" class="top-menu b-b-none!"
-          :default-active="topMenuKey" @select="onTopMenuKeyChange"
+          v-if="visible.menu" mode="horizontal" class="top-menu b-b-none!" :default-active="topMenuKey"
+          @select="onTopMenuKeyChange"
         >
           <template #default>
             <component :is="menuItem" v-for="menuItem in topMenuItems" :key="menuItem.key" />
@@ -144,13 +151,13 @@ defineExpose({ refreshTopMenu })
       <!-- Right section of the top bar 头部右侧区 -->
       <div h-full flex-right-center p-r-3>
         <ActionIcon
-          v-if="menuSetting.topMenu.showSubMenu && isTopBarLayout && !app.isMobile" button
-          icon-class="i-carbon:side-panel-close" @click="app.toggleMenuPosition"
+          v-if="menuSetting.topMenu.showSubMenu && app.IsTopBar && !app.isMobile" button
+          icon-class="i-carbon:side-panel-close" @click="toggleMenuPosition"
         />
         <ActionIcon
           v-else-if="!app.isMobile" button
-          :icon-class="`i-carbon:align-${isTopBarLayout ? 'horizontal-left' : 'vertical-top'}`"
-          @click="app.toggleMenuPosition"
+          :icon-class="`i-carbon:align-${app.IsTopBar ? 'horizontal-left' : 'vertical-top'}`"
+          @click="toggleMenuPosition"
         />
         <ActionIcon
           v-if="menuSetting.buttons.includes(MenuButtonEnum.ThemeMode)" button
@@ -216,10 +223,10 @@ defineExpose({ refreshTopMenu })
 
 <style scoped lang="scss">
 :deep(.top-menu.el-menu) {
-  --at-apply: h-header;
+  --uno: 'h-header';
 
   .el-menu-item {
-    --at-apply: h-header lh-header;
+    --uno: 'h-header lh-header';
   }
 }
 </style>

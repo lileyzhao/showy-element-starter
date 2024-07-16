@@ -13,7 +13,8 @@ const app = useAppStore()
 const route = useRoute()
 const fullRoutes = getFullRoutes()
 
-const mountTimeout = ref()
+const mountTimeout = ref<any[]>([])
+const stopTimeout = ref<boolean>(false)
 const mainSidebarRef = ref<InstanceType<typeof MainSidebar>>()
 const subSidebarRef = ref<InstanceType<typeof SubSidebar>>()
 const topBarRef = ref<InstanceType<typeof TopBar>>()
@@ -41,30 +42,37 @@ const mainMenuRootKey = computed(() => {
   else return findRootRoute(currRoute.meta.parentName as string)
 })
 
-/** Main menu selected item changed. 主栏菜单选中项改变。 */
-const handleMainMenuChange = (key: string) => {
-  if (mainMenuKey.value === key)
-    return
-  mainMenuKey.value = key
-  subSidebarRef.value?.refreshSubMenu()
-  clearTimeout(mountTimeout.value)
-}
-
 /** Restore the sub-menu when the mouse enters the content area. 复原副栏菜单(当鼠标移入内容区时)。 */
 const restoreSubMenu = useDebounceFn(() => {
-  mountTimeout.value = setTimeout(() => {
+  const tt = setTimeout(() => {
+    if (stopTimeout.value)
+      return
     if (!app.MenuSetting.subMenu.collapsed) {
       if (!app.isMobile && !app.IsTopBar)
         mainSidebarRef.value?.refreshMainMenu()
       else if (!app.isMobile)
         topBarRef.value?.refreshTopMenu()
     }
-  }, 350)
+  }, 700)
+  mountTimeout.value?.push(tt)
 }, 350)
 
 /** Cancel the restore of the sub-menu. 取消复原副栏菜单。 */
 const cancelRestoreSubMenu = () => {
-  clearTimeout(mountTimeout.value)
+  stopTimeout.value = true
+  while (mountTimeout.value.length > 0) {
+    const tt = mountTimeout.value.shift()
+    clearTimeout(tt)
+  }
+}
+
+/** Main menu selected item changed. 主栏菜单选中项改变。 */
+const handleMainMenuChange = (key: string) => {
+  if (mainMenuKey.value === key)
+    return
+  mainMenuKey.value = key
+  subSidebarRef.value?.refreshSubMenu()
+  cancelRestoreSubMenu()
 }
 
 /** Trigger mobile mode. 触发移动端模式。 */
@@ -99,21 +107,24 @@ const handleAction = (op: string, _val: any) => {
 <template>
   <el-container has-sider style="min-height: 100vh">
     <!-- Sidebar (Desktop): Main Sidebar. 侧边栏(电脑端):主栏。 -->
-    <MainSidebar ref="mainSidebarRef" @menu-change="handleMainMenuChange" />
+    <MainSidebar
+      ref="mainSidebarRef" @menu-change="handleMainMenuChange" @mouseenter="cancelRestoreSubMenu"
+      @mouseleave="stopTimeout = false"
+    />
     <!-- Sidebar (Desktop): Sub Sidebar. 侧边栏(电脑端):副栏。 -->
-    <SubSidebar ref="subSidebarRef" :parent-menu-key="mainMenuRootKey" />
+    <SubSidebar
+      ref="subSidebarRef" :parent-menu-key="mainMenuRootKey" @mouseenter="cancelRestoreSubMenu"
+      @mouseleave="stopTimeout = false"
+    />
     <!-- Right main area. 右侧主体区。 -->
     <el-container class="h-100vh flex flex-col!">
       <!-- Top bar area. 头部横栏区。 -->
       <TopBar
         ref="topBarRef" @action="handleAction" @key-change="handleMainMenuChange"
-        @mouseenter="cancelRestoreSubMenu"
+        @mouseenter="cancelRestoreSubMenu" @mouseleave="stopTimeout = false"
       />
       <!-- Content area. 内容区。 -->
-      <el-main
-        id="app-main-content" flex-1 of-y-scroll p-0 @mouseenter="restoreSubMenu"
-        @mouseleave="cancelRestoreSubMenu"
-      >
+      <el-main id="app-main-content" flex-1 of-y-scroll p-0 @mouseenter="restoreSubMenu">
         <div p-12px>
           <router-view v-slot="{ Component, route: r }">
             <transition name="fade">

@@ -47,7 +47,7 @@ defineExpose({ show })
 <template>
   <el-drawer
     v-if="app.isMobile" v-model="drawerActive" class="mobile-drawer" :size="menuSetting.mainMenu.widthMobile"
-    direction="ltr" :closable="false" :with-header="false"
+    direction="ltr" :with-header="false"
   >
     <template #footer>
       <div w-full>
@@ -57,7 +57,7 @@ defineExpose({ show })
     <div style="border-bottom:1px solid rgba(255, 255, 255, 0.09);padding-left: 12px">
       <Logo flex-nowrap px-28px />
     </div>
-    <el-menu class="b-r-none!" @select="drawerActive.value = false">
+    <el-menu class="b-r-none!" @select="drawerActive = false">
       <template #default>
         <component :is="menuItem" v-for="menuItem in mobileMenuItems" :key="menuItem.key" />
       </template>
@@ -71,9 +71,8 @@ defineExpose({ show })
   </el-drawer>
 </template>
 
-<style scoped lang="scss">
-// TODO:
-:deep(.el-drawer__body) {
-  padding: 0 !important;
+<style>
+.mobile-drawer .el-drawer__body {
+  --uno: 'p-0!';
 }
 </style>

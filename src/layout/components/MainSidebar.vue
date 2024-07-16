@@ -101,8 +101,9 @@ defineExpose({ refreshMainMenu })
         class="h-auto! px-0!"
         :style="`background-color:${mainMenuInverted ? 'var(--el-bg-color-dark)' : 'transparent'};`"
       >
-        <div v-if="!app.IsDarkMode" :class="`${collMainMenu ? 'flex justify-around' : 'relative h-8 w-full'}`">
+        <div :class="`h-8 ${collMainMenu ? 'flex justify-around' : 'relative w-full'}`">
           <div
+            v-if="!app.IsDarkMode"
             :class="`${!collMainMenu && 'left-50% -translate-x-1/2 absolute'} i-line-md:${mainMenuInverted ? 'sunny-filled text-white' : 'moon-filled'}  hover:color-primary`"
             cursor-pointer text-5 @click="mainMenuInverted = !mainMenuInverted"
           />
@@ -120,7 +121,7 @@ defineExpose({ refreshMainMenu })
 <style scoped lang="scss">
 .main-menu {
   :deep(.el-sub-menu__title) {
-    --at-apply: h-auto !;
+    --uno: 'h-auto!';
   }
 }
 </style>

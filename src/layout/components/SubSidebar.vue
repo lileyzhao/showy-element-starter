@@ -47,10 +47,12 @@ const collSubMenu = computed({
 })
 
 const visible = computed(() => {
-  if (app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
+  if (app.isMobile)
+    return false
+  else if (app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR)
     return app.MenuSetting.topMenu.showSubMenu && subMenuRoutes.value.length > 0
   else
-    return !app.MenuSetting.subMenu.collapsed || app.MenuSetting.topMenu.showSubMenu
+    return !app.MenuSetting.subMenu.collapsed && subMenuRoutes.value.length > 0
 })
 
 const visibleLogo = computed(() => app.MenuSetting.menuPosition === MenuPositionEnum.TOP_BAR && app.MenuSetting.topMenu.showSubMenu)
